@@ -1,14 +1,20 @@
 package main
 
-import (
+import(
 	"fmt"
 	"net/http"
+	"github.com/gorilla/mux"
 )
 
-func main() {
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "Hello, you have requested: %s\n", r.URL.Path)
+func main(){
+	r := mux.NewRouter()
+	r.HandleFunc("/book/{title}/page/{page}", func(w http.ResponseWriter, r *http.Request) {
+		vars := mux.Vars(r)
+		title := vars["title"]
+		page := vars["page"]
+
+		fmt.Fprintf(w, "Book Title: %s, Page Number: %s", title, page)
 	})
 
-	http.ListenAndServe(":8080", nil)
+	http.ListenAndServe(":80", r)
 }
